@@ -4,7 +4,7 @@ const config = {
   MicrosoftAppTenantId: process.env.TENANT_ID,
   MicrosoftAppPassword: process.env.CLIENT_SECRET,
   openAIKey: process.env.OPENAI_API_KEY,
-  openAIModelName: "gpt-3.5-turbo",
+  openAIModelName: "gpt-5-mini",
 };
 
 export default config;

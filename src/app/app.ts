@@ -2,10 +2,10 @@ import { App } from "@microsoft/teams.apps";
 import { ChatPrompt } from "@microsoft/teams.ai";
 import { LocalStorage } from "@microsoft/teams.common";
 import { OpenAIChatModel } from "@microsoft/teams.openai";
-import { MessageActivity, TokenCredentials } from '@microsoft/teams.api';
-import { ManagedIdentityCredential } from '@azure/identity';
-import * as fs from 'fs';
-import * as path from 'path';
+import { MessageActivity, TokenCredentials } from "@microsoft/teams.api";
+import { ManagedIdentityCredential } from "@azure/identity";
+import * as fs from "fs";
+import * as path from "path";
 import config from "../config";
 
 // Create storage for conversation history
@@ -14,42 +14,48 @@ const storage = new LocalStorage();
 // Load instructions from file on initialization
 function loadInstructions(): string {
   const instructionsFilePath = path.join(__dirname, "instructions.txt");
-  return fs.readFileSync(instructionsFilePath, 'utf-8').trim();
+  return fs.readFileSync(instructionsFilePath, "utf-8").trim();
 }
 
 // Load instructions once at startup
 const instructions = loadInstructions();
 
 const createTokenFactory = () => {
-  return async (scope: string | string[], tenantId?: string): Promise<string> => {
+  return async (
+    scope: string | string[],
+    tenantId?: string,
+  ): Promise<string> => {
     const managedIdentityCredential = new ManagedIdentityCredential({
-        clientId: process.env.CLIENT_ID
-      });
+      clientId: process.env.CLIENT_ID,
+    });
     const scopes = Array.isArray(scope) ? scope : [scope];
     const tokenResponse = await managedIdentityCredential.getToken(scopes, {
-      tenantId: tenantId
+      tenantId: tenantId,
     });
-   
+
     return tokenResponse.token;
   };
 };
 
 // Configure authentication using TokenCredentials
 const tokenCredentials: TokenCredentials = {
-  clientId: process.env.CLIENT_ID || '',
-  token: createTokenFactory()
+  clientId: process.env.CLIENT_ID || "",
+  token: createTokenFactory(),
 };
 
-const credentialOptions = config.MicrosoftAppType === "UserAssignedMsi" ? { ...tokenCredentials } : undefined;
+const credentialOptions =
+  config.MicrosoftAppType === "UserAssignedMsi"
+    ? { ...tokenCredentials }
+    : undefined;
 
 // Create the app with storage
 const app = new App({
   ...credentialOptions,
-  storage
+  storage,
 });
 
 // Handle incoming messages
-app.on('message', async ({ send, stream, activity }) => {
+app.on("message", async ({ send, stream, activity }) => {
   //Get conversation history
   const conversationKey = `${activity.conversation.id}/${activity.from.id}`;
   const messages = storage.get(conversationKey) || [];
@@ -60,22 +66,24 @@ app.on('message', async ({ send, stream, activity }) => {
       instructions,
       model: new OpenAIChatModel({
         model: config.openAIModelName,
-        apiKey: config.openAIKey
-      })
-    })
+        apiKey: config.openAIKey,
+      }),
+    });
 
     if (activity.conversation.isGroup) {
       // If the conversation is a group chat, we need to send the final response
       // back to the group chat
       const response = await prompt.send(activity.text);
-      const responseActivity = new MessageActivity(response.content).addAiGenerated().addFeedback();
+      const responseActivity = new MessageActivity(response.content)
+        .addAiGenerated()
+        .addFeedback();
       await send(responseActivity);
     } else {
-        await prompt.send(activity.text, {
-          onChunk: (chunk) => {
-            stream.emit(chunk);
-          },
-        });
+      await prompt.send(activity.text, {
+        onChunk: (chunk) => {
+          stream.emit(chunk);
+        },
+      });
       // We wrap the final response with an AI Generated indicator
       stream.emit(new MessageActivity().addAiGenerated().addFeedback());
     }
@@ -83,13 +91,15 @@ app.on('message', async ({ send, stream, activity }) => {
   } catch (error) {
     console.error(error);
     await send("The agent encountered an error or bug.");
-    await send("To continue to run this agent, please fix the agent source code.");
+    await send(
+      "To continue to run this agent, please fix the agent source code.",
+    );
   }
 });
 
-app.on('message.submit.feedback', async ({ activity }) => {
+app.on("message.submit.feedback", async ({ activity }) => {
   //add custom feedback process logic here
   console.log("Your feedback is " + JSON.stringify(activity.value));
-})
+});
 
 export default app;
