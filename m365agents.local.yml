@@ -40,7 +40,6 @@ provision:
       channels:
         - name: msteams
 
-
   # Build app package with latest env value
   - uses: teamsApp/zipAppPackage
     with:
@@ -61,7 +60,6 @@ provision:
     with:
       # Relative path to this file. This is the path for built zip file.
       appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
-
 
 deploy:
   # Run npm command

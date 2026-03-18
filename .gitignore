@@ -4,6 +4,7 @@ env/.env.local
 env/.env.sandbox
 .localConfigs
 .localConfigs.playground
+.localConfigs.21v
 .localConfigs
 .notification.localstore.json
 .notification.playgroundstore.json
