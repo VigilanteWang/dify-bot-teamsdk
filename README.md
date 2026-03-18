@@ -26,29 +26,29 @@
 
 ## 模板包含内容
 
-| 目录 | 内容 |
-| --- | --- |
-| `.vscode` | VS Code 调试相关文件 |
-| `appPackage` | 应用清单模板 |
-| `env` | 环境变量文件 |
-| `infra` | Azure 资源预配模板 |
-| `src` | 应用源代码 |
+| 目录         | 内容                 |
+| ------------ | -------------------- |
+| `.vscode`    | VS Code 调试相关文件 |
+| `appPackage` | 应用清单模板         |
+| `env`        | 环境变量文件         |
+| `infra`      | Azure 资源预配模板   |
+| `src`        | 应用源代码           |
 
 下面这些文件通常需要按你的业务进行调整：
 
-| 文件 | 说明 |
-| --- | --- |
-| `src/index.ts` | 应用入口文件 |
-| `src/config.ts` | 运行时环境变量与云环境配置 |
-| `src/app/instructions.txt` | Prompt 指令内容 |
-| `src/app/app.ts` | 基础 AI 聊天机器人核心业务逻辑 |
+| 文件                       | 说明                           |
+| -------------------------- | ------------------------------ |
+| `src/index.ts`             | 应用入口文件                   |
+| `src/config.ts`            | 运行时环境变量与云环境配置     |
+| `src/app/instructions.txt` | Prompt 指令内容                |
+| `src/app/app.ts`           | 基础 AI 聊天机器人核心业务逻辑 |
 
 下面这些文件是 Microsoft 365 Agents Toolkit 项目特有文件。如需了解其工作方式，可参考 [Github 上的完整说明](https://github.com/OfficeDev/TeamsFx/wiki/Teams-Toolkit-Visual-Studio-Code-v5-Guide#overview)。
 
-| 文件 | 说明 |
-| --- | --- |
-| `m365agents.yml` | 主项目文件，定义属性与各阶段配置 |
-| `m365agents.local.yml` | 基于主文件覆盖本地运行与调试行为 |
+| 文件                        | 说明                                                    |
+| --------------------------- | ------------------------------------------------------- |
+| `m365agents.yml`            | 主项目文件，定义属性与各阶段配置                        |
+| `m365agents.local.yml`      | 基于主文件覆盖本地运行与调试行为                        |
 | `m365agents.playground.yml` | 基于主文件覆盖 Microsoft 365 Agents Playground 调试行为 |
 
 ## 21V 中国云本地调试
